@@ -1,11 +1,23 @@
 <script setup>
 
-import { ref ,onMounted ,computed} from 'vue';
+import { ref ,onMounted ,computed,inject} from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
 
+import { useLoading } from 'vue-loading-overlay' ;
 
+// const fullPage = ref(true);
+// const onCancel = ref(false);
+// const formContainer = ref(null);
+const $loading = useLoading({
+  // options
+    color: '#ffd370',                  // loading畫面的顏色
+    backgroundColor: 'white',       // 背景顏色
+    opacity: 0.8,                   // 透明度
+    blur: '10px',                   // 背景模糊效果
+    zIndex: 9999                    // loading畫面的層級
+})
 
 const router =useRouter();
 
@@ -23,6 +35,7 @@ const token = document.cookie.replace(
         "$1",
     );
 onMounted(async ( )=> {
+
     
     // const token = document.cookie.replace(
     //     /(?:(?:^|.*;\s*)customTodoToken\s*\=\s*([^;]*).*$)|^.*$/,
@@ -37,16 +50,23 @@ onMounted(async ( )=> {
         });
         router.push("/login");
         return
-    }
+    };
+    const loader = $loading.show({   
+        // Optional parameters
+        // container: fullPage.value ? null : formContainer.value,
+        canCancel: true,
+        // onCancel: onCancel.value
+    })
     try {
             const res = await axios.get(`${api}/users/checkout`, {
                 headers: {
                     Authorization: token,
                 }
             });
-
             user.value=res.data;
+            loader.hide();
             getTodoList();
+
             // console.log("ueser:",user.value,"token:",token);
     } catch (error) {
         console.log(error);
@@ -63,12 +83,12 @@ onMounted(async ( )=> {
 
 })
 
-
 // 代辦清單
 //1.取得代辦清單
 const todoList=ref([]);//查看api得出的data是個[]。
 
 const getTodoList = async () => {
+
     try {
         const response = await axios.get(`${api}/todos`, {
             headers: {
@@ -76,6 +96,7 @@ const getTodoList = async () => {
             }
         });
         todoList.value = response.data.data;
+
     } catch (error) {
         // console.log(error.message);
         Swal.fire(error.response.data.message);
@@ -130,12 +151,21 @@ const addTodoItem = async () => {
 // 3.更改代辦清單狀態(status)
 const toggleTodoItem = async (id) => {
     // console.log("更改代辦清單狀態",id)
+    const loader = $loading.show({   
+        // Optional parameters
+        // container: fullPage.value ? null : formContainer.value,
+        canCancel: true,
+        // onCancel: onCancel.value
+    })
     try {
         await axios.patch(`${api}/todos/${id}/toggle`,{}, {
             headers: {
                 Authorization: token,   
             },
         });
+        setTimeout(()=>{
+            loader.hide();
+        },100);
     } catch (error) {
         // console.log(error.response);
         Swal.fire(error.response.data.message);
@@ -199,21 +229,30 @@ const countUnfinishedTodo = computed(() => {
 
 //7.登出
 const signOut = async () => {
+    const loader = $loading.show({   
+        // Optional parameters
+        // container: fullPage.value ? null : formContainer.value,
+        canCancel: true,
+        // onCancel: onCancel.value
+    })
     try {
         const res = await axios.post(
         `${api}/users/sign_out`,
-        {},
-        {
-            headers: {
-                Authorization: token
+            {},
+            {
+                headers: {
+                    Authorization: token
+                }
             }
-        }
         )
-        console.log(res);
+        loader.hide();
+        // console.log(res);
         Swal.fire(res.data.message);
+
     } catch (error) {
         Swal.fire("登出失敗",`${error}`);
     }
+
     document.cookie = 'customTodoToken=';
     user.value = '';
     setTimeout(()=>{

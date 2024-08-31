@@ -2,12 +2,24 @@
 import { ref,onMounted } from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useRoute ,useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
+import { useLoading } from 'vue-loading-overlay' ;
 
-const route =useRoute();
+// const fullPage = ref(true)
+// const onCancel = ref(false)
+// const formContainer = ref(null)
+const $loading = useLoading({
+  // options
+    color: '#ffd370',                  // loading畫面的顏色
+    backgroundColor: 'white',       // 背景顏色
+    opacity: 0.8,                   // 透明度
+    blur: '10px',                   // 背景模糊效果
+    zIndex: 9999                    // loading畫面的層級
+})
+
 const router =useRouter();
-// console.log(route,router)
+
 const api = "https://todolist-api.hexschool.io";
 // 登入
 const signInField =ref({
@@ -16,19 +28,25 @@ const signInField =ref({
 })
 const signInRes=ref("");
 const signIn = async () => {
-    console.log("signInRes:",signInRes.value);
+    // console.log("signInRes:",signInRes.value);
+    const loader = $loading.show({   
+        canCancel: true,
+    })
     try {
         const res = await axios.post(`${api}/users/sign_in`, signInField.value);
-        console.log(res.data);
+        // console.log(res.data);
         document.cookie = `customTodoToken=${res.data.token}`;
         signInRes.value = res.data.token;
+        setTimeout(()=>{
+          loader.hide();
+        },100)
         Swal.fire({
             position: "center",
             icon: "success",
             title: `${res.data.nickname}您已成功登入`,
             showConfirmButton: false,
             timer: 1500
-        })
+        });
         setTimeout(()=>{
           router.push('/todolist');
 

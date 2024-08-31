@@ -20,6 +20,9 @@ import { localize, setLocale } from '@vee-validate/i18n';
   // 引入 VeeValidate 的繁體中文語系檔
 import zhTW from '@vee-validate/i18n/dist/locale/zh_TW.json';
 
+
+import { LoadingPlugin } from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css';
 import App from './App.vue';
 import router from './router';
 
@@ -40,4 +43,8 @@ app.use(router);
 app.component('VField', Field);
 app.component('VForm', Form);
 app.component('ErrorMessage', ErrorMessage);
+
+app.use(LoadingPlugin, {
+  color: '#FF0000'
+});
 app.mount('#app');

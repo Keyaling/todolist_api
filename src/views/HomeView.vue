@@ -2,7 +2,22 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useRoute ,useRouter } from 'vue-router'
-import {onMounted, ref} from 'vue';
+import { ref} from 'vue';
+
+
+import { useLoading } from 'vue-loading-overlay' ;
+
+// const fullPage = ref(true)
+// const onCancel = ref(false)
+// const formContainer = ref(null)
+const $loading = useLoading({
+  // options
+    color: '#ffd370',                  // loading畫面的顏色
+    backgroundColor: 'white',       // 背景顏色
+    opacity: 0.8,                   // 透明度
+    blur: '10px',                   // 背景模糊效果
+    zIndex: 9999                    // loading畫面的層級
+})
 
 const route =useRoute();
 const router =useRouter();
@@ -15,10 +30,13 @@ const firstPwd = ref("");
 const confirmPwd = ref("");
 
 
-const signupRes=ref("");
+// const signupRes=ref("");
 
 
 const signUp = async () => {
+    const loader = $loading.show({   
+          canCancel: true,
+    })
     if (firstPwd.value === confirmPwd.value) {
         try {
             await axios.post(`${api}/users/sign_up`, {
@@ -26,9 +44,9 @@ const signUp = async () => {
                 password: confirmPwd.value,
                 nickname: nickname.value
             })
+            loader.hide();
             Swal.fire("恭喜您已註冊成功!");
             setTimeout(() => {
-              // console.log("Delayed for 1 second.");
               router.push('/login');
 
             }, 2000);

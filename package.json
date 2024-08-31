@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "deploy": "vite build && gh-pages -d dist",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write src/"
   },
@@ -14,10 +15,12 @@
     "@vee-validate/i18n": "^4.13.2",
     "@vee-validate/rules": "^4.13.2",
     "axios": "^1.7.5",
+    "gh-pages": "^6.1.1",
     "pinia": "^2.1.7",
     "sweetalert2": "^11.12.4",
     "vee-validate": "^4.13.2",
     "vue": "^3.4.29",
+    "vue-loading-overlay": "6.0",
     "vue-router": "^4.3.3"
   },
   "devDependencies": {
