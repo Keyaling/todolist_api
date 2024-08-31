@@ -69,7 +69,7 @@ onMounted(async ( )=> {
 
             // console.log("ueser:",user.value,"token:",token);
     } catch (error) {
-        console.log(error);
+        // console.log(error);
         Swal.fire({
             icon: "error",
             title: "驗證失效",

@@ -34,8 +34,9 @@ const signIn = async () => {
     })
     try {
         const res = await axios.post(`${api}/users/sign_in`, signInField.value);
-        // console.log(res.data);
-        document.cookie = `customTodoToken=${res.data.token}`;
+        console.log(res.data);
+        // expires=${new Date(res.data.exp)}
+        document.cookie = `customTodoToken=${res.data.token};SameSite=None; Secure`;
         signInRes.value = res.data.token;
         setTimeout(()=>{
           loader.hide();
@@ -53,7 +54,7 @@ const signIn = async () => {
         },1000)
         
     } catch (error) {
-        console.log(error.response.data);
+        // console.log(error.response.data);
         Swal.fire({
           icon: "error",
           title: error.response.data.message,
