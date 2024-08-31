@@ -55,6 +55,7 @@ const signIn = async () => {
         
     } catch (error) {
         // console.log(error.response.data);
+        loader.hide();
         Swal.fire({
           icon: "error",
           title: error.response.data.message,

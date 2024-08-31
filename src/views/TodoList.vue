@@ -250,6 +250,7 @@ const signOut = async () => {
         Swal.fire(res.data.message);
 
     } catch (error) {
+        loader.hide();
         Swal.fire("登出失敗",`${error}`);
     }
 

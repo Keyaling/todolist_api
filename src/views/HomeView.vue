@@ -34,10 +34,13 @@ const confirmPwd = ref("");
 
 
 const signUp = async () => {
-    const loader = $loading.show({   
-          canCancel: true,
-    })
+    // const loader = $loading.show({   
+    //       canCancel: true,
+    // })
     if (firstPwd.value === confirmPwd.value) {
+      const loader = $loading.show({   
+          canCancel: true,
+      })
         try {
             await axios.post(`${api}/users/sign_up`, {
                 email: email.value,
@@ -53,6 +56,7 @@ const signUp = async () => {
 
         } catch (error) {
             //console.log(error.response.data.message)
+            loader.hide();
             Swal.fire({
                 title: '系統警告',
                 text: error.response.data.message,
